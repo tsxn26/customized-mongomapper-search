@@ -50,6 +50,7 @@ module Search::SolrDocument
     def delete_from_search_engine
       init_connection
       @Solr.delete_by_id(self._id)
+      @Solr.commit
     end
   end
 
