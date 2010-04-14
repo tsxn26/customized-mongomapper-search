@@ -22,7 +22,7 @@ module Search::SolrDocument
     protected
     def search_engine_query(query, opts = {})
       opts.reverse_merge!(:limit => 20, :offset => 0)      
-      resp = @Solr.select(:q => query, :rows  => opts[:limit], :start => opts[:offset], :qt => :dismax, :fl => '*,score')['response']
+      resp = @Solr.select(:q => query, :rows  => opts[:limit], :start => opts[:offset], :qt => !opts[:qt].blank? ? opts[:qt] : "standard", :fl => '*,score')['response']
       return resp['docs'].map{|doc| find(doc['id'])}, resp['numFound']      
     end    
   end
