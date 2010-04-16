@@ -1,6 +1,6 @@
 = tsxn-mongomapper-search
 
-Easily integreate mongo mapper with enterprise search like solr.  MODIFIED/CUSTOMIZED by tsxn26 to use a specified Solr URL in the model.  
+Easily integreate mongo mapper with enterprise search like solr.  MODIFIED/CUSTOMIZED to use a specified Solr URL in the model.  
 
 == Credits
 
@@ -15,12 +15,18 @@ class << self; attr_accessor :SOLR_URL end
 
 Example:
 
-class Foo
-  include MongoMapper::Document
-  include Search::SolrDocument
+  class Foo
+    include MongoMapper::Document
+    include Search::SolrDocument
   
-  class << self; attr_accessor :SOLR_URL end
-  @SOLR_URL = "http://localhost:8080/solr/foo.core"
+    class << self; attr_accessor :SOLR_URL end
+    @SOLR_URL = "http://localhost:8080/solr/foo.core"
   
-  key :name, String, :fulltext => true
-end
+    key :name, String, :fulltext => true
+  end
+
+The name of the index document fields can be also be specified if the name of the keys aren't desired.
+
+Example:
+
+  key :name, String, :fulltext => true, :solr_field_name => "object_name"
