@@ -2,9 +2,9 @@ require 'rubygems'
 require 'rake'
 require 'echoe'
 
-Echoe.new('customized-mongomapper-search', '0.1.2') do |p|
+Echoe.new('customized-mongomapper-search', '0.1.3') do |p|
   p.description    = "Easily integreate mongo mapper with enterprise search like solr.  CUSTOMIZED to use a specified Solr URL in the model.  Original mongomapper-search gem (version 0.1.0) was written by Fernando Meyer and can be found at http://github.com/fmeyer/mongomapper-search."
-  p.url            = "http://github.com/tsxn26/tsxn-mongomapper-search"
+  p.url            = "http://github.com/tsxn26/customized-mongomapper-search"
   p.author         = ["Fernando Meyer", "Thomas Nguyen"]
   p.email          = "tsxn26@gmail.com"
   p.ignore_pattern = ["tmp/*", "script/*"]

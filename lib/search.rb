@@ -31,7 +31,9 @@ module Search::SolrDocument
     def to_index
       attrs = {'id' => self._id}
       self.keys.each_pair do |name, key|
-        attrs.merge!(name => self[name]) if key.options[:fulltext] && self[name] != nil
+        field_name = key.options[:solr_field_name]
+        field_name ||= name
+        attrs.merge!(field_name => self[name]) if key.options[:fulltext] && self[name] != nil
       end
       attrs
     end

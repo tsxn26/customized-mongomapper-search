@@ -1,0 +1,8 @@
+0.1.3
+------
+- Added an option named "solr_field_name" for MongoMapper document keys.  The value of "solr_field_name" overrides the name of the key when indexing the document in Solr.
+
+
+0.1.2
+______
+- Added the ability to define the value of the "qt" request parameter as an option in the options hash of the search method.  The value of the "qt" request parameter defaults to "standard" if one is not specified in the options hash.
