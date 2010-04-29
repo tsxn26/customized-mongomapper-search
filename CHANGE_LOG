@@ -1,3 +1,8 @@
+0.1.4
+------
+- Added a way to specify the Solr document id (uniqueKey) field that the MongoMapper document _id key maps to.
+- Added handling for Solr document id/uniqueKey field that's set as multiValued so that the first value is chosen.  There can only be one value for the id/uniqueKey field but it's still possible to set the field as multiValued.  RSolr returns an array containing only one value for the id/uniqueKey field when the field is multiValued.
+
 0.1.3
 ------
 - Added an option named "solr_field_name" for MongoMapper document keys.  The value of "solr_field_name" overrides the name of the key when indexing the document in Solr.

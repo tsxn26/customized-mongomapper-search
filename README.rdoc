@@ -1,6 +1,6 @@
 = tsxn-mongomapper-search
 
-Easily integreate mongo mapper with enterprise search like solr.  MODIFIED/CUSTOMIZED to use a specified Solr URL in the model.  
+Easily integrate mongo mapper with enterprise search like solr.  MODIFIED/CUSTOMIZED to use a specified Solr URL in the model.  
 
 == Credits
 
@@ -10,8 +10,8 @@ The original gem was written by Fernando Meyer and can be found at http://github
 
 Within the model that includes MongoMapper::Document add the following:
 
-class << self; attr_accessor :SOLR_URL end
-@SOLR_URL = "{SOLR URL}"
+  class << self; attr_accessor :SOLR_URL end
+  @SOLR_URL = "{SOLR URL}"   # {SOLR URL} should be replaced with the actual solr url if that wasn't apparent
 
 Example:
 
@@ -30,3 +30,8 @@ The name of the index document fields can be also be specified if the name of th
 Example:
 
   key :name, String, :fulltext => true, :solr_field_name => "object_name"
+
+The name of the Solr document id/uniqueKey name can be specified that the MongoMapper document _id maps to.  Within the model that includes MongoMapper::Document add the folowing:
+
+  class << self; attr_accessor :SOLR_DOC_ID_FIELD end
+  @SOLR_DOC_ID_FIELD = "preexisting_index_id"

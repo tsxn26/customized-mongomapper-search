@@ -13,9 +13,12 @@ module Search::SolrDocument
     def search(query, page = 1, opts = {})
       init_connection()
       WillPaginate::Collection.create(page, 20) do |pager|
-        result,count = search_engine_query(query, opts)
+        result = search_engine_query(query, opts)
+        if(result.class == Array)
+          result.compact!
+        end
         pager.replace(result)
-        pager.total_entries = count
+        pager.total_entries = result.length
       end
     end
     
@@ -23,13 +26,31 @@ module Search::SolrDocument
     def search_engine_query(query, opts = {})
       opts.reverse_merge!(:limit => 20, :offset => 0)      
       resp = @Solr.select(:q => query, :rows  => opts[:limit], :start => opts[:offset], :qt => !opts[:qt].blank? ? opts[:qt] : "standard", :fl => '*,score')['response']
-      return resp['docs'].map{|doc| find(doc['id'])}, resp['numFound']      
+      
+      if(instance_variable_defined?(:@SOLR_DOC_ID_FIELD) && !instance_variable_get(:@SOLR_DOC_ID_FIELD).blank?)
+        id_name = instance_variable_get(:@SOLR_DOC_ID_FIELD)
+      else  
+        id_name = 'id'
+      end
+      
+      return resp['docs'].map do |doc| 
+        id = doc[id_name]
+        if id.class == Array
+          id = id[0]
+        end
+        find(id)
+      end
     end    
   end
 
   module InstanceMethods
     def to_index
-      attrs = {'id' => self._id}
+      if(self.class.instance_variable_defined?(:@SOLR_DOC_ID_FIELD) && !self.class.SOLR_DOC_ID_FIELD.blank?)
+        attrs = {self.class.SOLR_DOC_ID_FIELD => self._id}
+      else  
+        attrs = {'id' => self._id}
+      end
+      
       self.keys.each_pair do |name, key|
         field_name = key.options[:solr_field_name]
         field_name ||= name
