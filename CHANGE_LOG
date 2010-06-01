@@ -1,3 +1,8 @@
+1.0.0
+------
+- Major refactoring was done to modularize search.  This should minimize the code that needs to be changed in the model if the modeling framework is to be switched.  The search code is more generalized to accommodate Rails 3 attribute access that isn't specific to Mongo Mapper.
+- Added support for indexing :many associations.  This implementation is specific to Mongo Mapper but can be easily modified if the modeling framework is swapped.  
+
 0.1.4
 ------
 - Added a way to specify the Solr document id (uniqueKey) field that the MongoMapper document _id key maps to.

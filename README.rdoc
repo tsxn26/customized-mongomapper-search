@@ -1,37 +1,76 @@
 = tsxn-mongomapper-search
 
-Easily integrate mongo mapper with enterprise search like solr.  MODIFIED/CUSTOMIZED to use a specified Solr URL in the model.  
+Easily integrate Mongo Mapper with with Solr search.  
 
 == Credits
 
-The original gem was written by Fernando Meyer and can be found at http://github.com/fmeyer/mongomapper-search.
+Earlier versions < 1.0.0 were based off the mongomapper-search gem written by Fernando Meyer that can be found at http://github.com/fmeyer/mongomapper-search.
 
-== Usage
+== Usage 
+== Version 1.0.0
 
-Within the model that includes MongoMapper::Document add the following:
+To make a MongoMapper::Document indexable add the following line to include the functionality:
 
-  class << self; attr_accessor :SOLR_URL end
-  @SOLR_URL = "{SOLR URL}"   # {SOLR URL} should be replaced with the actual solr url if that wasn't apparent
+	include Search::Indexable
 
-Example:
+The Solr URL must be specified using the :solr_url method.  e.g.
 
-  class Foo
-    include MongoMapper::Document
-    include Search::SolrDocument
-  
-    class << self; attr_accessor :SOLR_URL end
-    @SOLR_URL = "http://localhost:8080/solr/foo.core"
-  
-    key :name, String, :fulltext => true
-  end
+	solr_url "http://localhost/solr/some.core"
 
-The name of the index document fields can be also be specified if the name of the keys aren't desired.
+To specify which attributes that need to be indexable pass hashes with the attributes and the corresponding indexed names to the :idx_attr method.  e.g.
 
-Example:
+  	idx_attr :_id => "object_id", :name => "title", :foo => "bar"
 
-  key :name, String, :fulltext => true, :solr_field_name => "object_name"
+To specify which :many associations that need to be indexable pass hashes with the name of the associations and the namespace the attributes of the association should be indexed under to the :idx_assoc method.  A blank namespace will result in no namespace to be pre-appended to the association attribute names.  e.g.
 
-The name of the Solr document id/uniqueKey name can be specified that the MongoMapper document _id maps to.  Within the model that includes MongoMapper::Document add the folowing:
+	idx_assoc :object_relations => "foo" 
+	
+To add search functionality add the following line to include:
 
-  class << self; attr_accessor :SOLR_DOC_ID_FIELD end
-  @SOLR_DOC_ID_FIELD = "preexisting_index_id"
+	include Search::Searchable
+
+== An indexing example
+
+Define a EmbeddedDocument model and specify the indexable fields.  The following model does not specify the Solr URL because it is a not a first class document.
+	
+	class Project
+		include MongoMapper::EmbeddedDocument
+		include Search::Indexable
+		
+		idx_attr :name => "proj_name"
+		
+		key :name
+	end
+	
+Define a Document model and specify the indexable fields and associations.	
+
+	class Employee
+		include MongoMapper::Document
+		include Search::Indexable
+		include Search::Searchable
+		
+		solr_url "http://search-api.search.com/solr/employee.core"
+		idx_attr :_id => "emp_id", :name => "emp_name"
+		idx_assoc :projects => "emp_project"
+		
+		key :name
+		many :projects
+	end
+
+Saving an instance of Employee causes that employee to be indexed in Solr.  The Lucene document that's indexed would appear something like:
+
+	employee doc
+		emp_id	= val
+		emp_name = val
+		emp_project.proj_name = val1
+		emp_project.proj_name = val2
+		emp_project.proj_name = ....
+		emp_project.proj_name = valN
+
+== A searching example
+
+	Employee.search('emp_name:"John Doe" emp_project.proj_name:"search"', :qt => 'dismax')
+	
+== Feedback & Contributions
+
+If the documentation here is not very clear please email me any suggested improvements.  Also if you would like me to pull changes from a fork to the master let me know.
