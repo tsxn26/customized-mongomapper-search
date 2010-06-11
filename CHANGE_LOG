@@ -1,3 +1,7 @@
+1.0.1
+------
+- Changed the output format of attributes of class type Time so that it complies with Solr's date field type.  The output format is now %Y-%m-%dT%H:%M:%SZ.  e.g. 2001-06-11T00:00:00Z
+
 1.0.0
 ------
 - Major refactoring was done to modularize search.  This should minimize the code that needs to be changed in the model if the modeling framework is to be switched.  The search code is more generalized to accommodate Rails 3 attribute access that isn't specific to Mongo Mapper.
