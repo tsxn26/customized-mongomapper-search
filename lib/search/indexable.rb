@@ -67,7 +67,7 @@ module Search
         end
       end
 
-      #protected
+      protected
       def get_indexable_fields
         fields = get_indexable_attributes
         fields.merge!(get_indexable_associations) if self.respond_to?(:associations) 

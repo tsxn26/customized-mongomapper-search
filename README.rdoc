@@ -1,6 +1,6 @@
 = tsxn-mongomapper-search
 
-Easily integrate Mongo Mapper with with Solr search.  
+Easily integrate Mongo Mapper with with Solr search.  Please view the CHANGELOG before updating the gem.
 
 == Credits
 
@@ -19,7 +19,7 @@ The Solr URL must be specified using the :solr_url method.  e.g.
 	
 To specify that the index and delete operations into Solr should be force committed the :idx_force_commit method must be passed a value of true.  It currently defaults to a value of false.  e.g.
 
-    idx_force_commit true
+	idx_force_commit true
 
 To specify which attributes that need to be indexable pass hashes with the attributes and the corresponding indexed names to the :idx_attr method.  e.g.
 
