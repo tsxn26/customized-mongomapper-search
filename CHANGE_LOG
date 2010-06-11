@@ -1,3 +1,8 @@
+1.0.2
+------
+- Added a class method "idx_force_commit" that specifies whether index and delete operations should be force committed.  ******* All index and delete operations now default to not being force committed. *******
+- Cleaned up code
+
 1.0.1
 ------
 - Changed the output format of attributes of class type Time so that it complies with Solr's date field type.  The output format is now %Y-%m-%dT%H:%M:%SZ.  e.g. 2001-06-11T00:00:00Z

@@ -29,65 +29,54 @@ module Search
         @idx_assocs = {}
         args.each { |x| @idx_assocs.merge!(x) }
       end
+      
+      def idx_force_commit(commit = false)
+        @idx_force_commit ||= commit
+      end
 
-      def solr_url(arg = nil)
-        if(arg != nil)
-          @solr_url = arg
-        end
-        @solr_url
+      def solr_url(url = nil)
+        @solr_url ||= url 
       end
 
       def idx_attrs
-        if @idx_attrs == nil
-          @idx_attrs = {}
-        end
-        @idx_attrs
+        @idx_attrs ||= {}
       end
 
       def idx_assocs
-        if @idx_assocs == nil
-          @idx_assocs = {}
-        end
-        @idx_assocs
+        @idx_assocs ||= {}
       end
     end
 
     module InstanceMethods
-      def index_to_solr(commit = true)
-        if(!self.class.solr_url.nil?)   # There's no point in attempting to index if the solr url isn't specified
+      def index_to_solr
+        if self.class.solr_url   # There's no point in attempting to index if the solr url isn't specified
           fields = get_indexable_fields
-          if(!fields.empty?)            # There's no point in indexing nothing
+          if !fields.empty?            # There's no point in indexing nothing
             solr_conn = RSolr.connect(:url => self.class.solr_url)
             solr_conn.add(fields)
-            if commit
-              solr_conn.commit
-            end
+            solr_conn.commit if self.class.idx_force_commit
           end
         end
       end
       
-      def delete_from_solr(commit = true)
-        if(!self.class.solr_url.nil?)
+      def delete_from_solr
+        if self.class.solr_url
           solr_conn = RSolr.connect(:url => self.class.solr_url)
           solr_conn.delete_by_id(self._id)
-          if commit
-            solr_conn.commit
-          end
+          solr_conn.commit if self.class.idx_force_commit
         end
       end
 
-      protected
+      #protected
       def get_indexable_fields
         fields = get_indexable_attributes
-        if self.respond_to?(:associations) 
-          fields.merge!(get_indexable_associations)
-        end
+        fields.merge!(get_indexable_associations) if self.respond_to?(:associations) 
         fields
       end
 
       def get_indexable_attributes
         fields = {}
-        if self.class.idx_attrs != nil
+        if self.class.idx_attrs 
           self.class.idx_attrs.each_pair do |x,y|
             fields[y] = self.attributes[x]
             fields[y] = fields[y].strftime("%Y-%m-%dT%H:%M:%SZ") if fields[y].is_a?(Time)
@@ -111,9 +100,7 @@ module Search
               if x.respond_to?("get_indexable_fields")
                 x_fields = x.get_indexable_fields
                 x_fields.each_pair do |field_name, field_value|
-                  if fields[namespace + field_name.to_s] == nil
-                    fields[namespace + field_name.to_s] = []
-                  end 
+                  fields[namespace + field_name.to_s] = [] if !fields[namespace + field_name.to_s]
                   fields[namespace + field_name.to_s].push(field_value)
                 end
               end

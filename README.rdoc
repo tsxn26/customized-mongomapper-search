@@ -7,7 +7,7 @@ Easily integrate Mongo Mapper with with Solr search.
 Earlier versions < 1.0.0 were based off the mongomapper-search gem written by Fernando Meyer that can be found at http://github.com/fmeyer/mongomapper-search.
 
 == Usage 
-== Version 1.0.0
+== Version 1.0.2
 
 To make a MongoMapper::Document indexable add the following line to include the functionality:
 
@@ -16,6 +16,10 @@ To make a MongoMapper::Document indexable add the following line to include the 
 The Solr URL must be specified using the :solr_url method.  e.g.
 
 	solr_url "http://localhost/solr/some.core"
+	
+To specify that the index and delete operations into Solr should be force committed the :idx_force_commit method must be passed a value of true.  It currently defaults to a value of false.  e.g.
+
+    idx_force_commit true
 
 To specify which attributes that need to be indexable pass hashes with the attributes and the corresponding indexed names to the :idx_attr method.  e.g.
 
@@ -52,6 +56,7 @@ Define a Document model and specify the indexable fields and associations.
 		solr_url "http://search-api.search.com/solr/employee.core"
 		idx_attr :_id => "emp_id", :name => "emp_name"
 		idx_assoc :projects => "emp_project"
+		idx_force_commit true
 		
 		key :name
 		many :projects
