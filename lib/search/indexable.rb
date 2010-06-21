@@ -79,7 +79,7 @@ module Search
         if self.class.idx_attrs 
           self.class.idx_attrs.each_pair do |x,y|
             fields[y] = self.attributes[x]
-            fields[y] = fields[y].strftime("%Y-%m-%dT%H:%M:%SZ") if fields[y].is_a?(Time)
+            fields[y] = fields[y].utc.iso8601 if fields[y].is_a?(Time)
           end
         end
         fields

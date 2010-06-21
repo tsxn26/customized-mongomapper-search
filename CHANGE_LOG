@@ -1,3 +1,7 @@
+1.0.3
+------
+- Fixed a bug where attributes of class type Time are sent to Solr as UTC times without actually being converted to UTC time.  The :utc method is now called on the Time instance before getting converted into a iso8601 string. 
+
 1.0.2
 ------
 - Added a class method "idx_force_commit" that specifies whether index and delete operations should be force committed.  ******* All index and delete operations now default to not being force committed. *******

@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rake'
 require 'echoe'
 
-Echoe.new('customized-mongomapper-search', '1.0.2') do |p|
+Echoe.new('customized-mongomapper-search', '1.0.3') do |p|
   p.description    = "Easily integrate Mongo Mapper with with Solr search.  Please view the CHANGELOG file found on the GitHub project homepage before upgrading."
   p.url            = "http://github.com/tsxn26/customized-mongomapper-search"
   p.author         = ["Thomas Nguyen"]
